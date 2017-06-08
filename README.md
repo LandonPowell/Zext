@@ -4,8 +4,12 @@ Zext has line numbers. Zext does not have a learning curve. Zext opens your file
 Zext makes Nano look difficult.
 
 ## Compilation instructions
-### Git clone or download this repo.
-### Install curses for ocaml with opam.
-### Run this command : `ocamlfind ocamlopt -o zext -linkpkg -package curses zext.ml`
-### Now the file called `zext` can be run like this from your folder : `./zext ~/Path/To/File`
-### Run this command to install zext: `sudo cp zext /usr/bin/zext`
+Git clone or download this repo.
+
+Install curses for ocaml with opam.
+
+Run this command : `ocamlfind ocamlopt -o zext -linkpkg -package curses zext.ml`
+
+Now the file called `zext` can be run like this from your folder : `./zext ~/Path/To/File`
+
+Run this command to install zext: `sudo cp zext /usr/bin/zext`
