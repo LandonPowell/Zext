@@ -12,4 +12,5 @@ Run this command : `ocamlfind ocamlopt -o zext -linkpkg -package curses zext.ml`
 
 Now the file called `zext` can be run like this from your folder : `./zext ~/Path/To/File`
 
-Run this command to install zext: `sudo cp zext /usr/bin/zext`
+## Install instructions
+Navigate to the git folder and run this command to install zext: `sudo cp zext /usr/bin/zext`
