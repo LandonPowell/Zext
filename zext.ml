@@ -84,6 +84,14 @@ let rec keyEvent event =
             cursorx := !cursorx + 1
     )
 
+    (* Home and end *)
+    else if event = Key.home then (
+        cursorx := 0
+    )
+    else if event = Key.end_ then (
+        cursorx := length !openFile.(!cursory)
+    )
+
     (* Page up *)
     else if event = 339 then (
         cursory := max (!cursory - 12) 0;
@@ -95,7 +103,7 @@ let rec keyEvent event =
         cursory := min (!cursory + 12) ((Array.length !openFile) - 1);
         cursorx := min !cursorx (length !openFile.(!cursory));
     )
-    
+
     (* Ctrl-S *)
     else if event = Key.save || event = 19 then (
         let f = open_out filename in
