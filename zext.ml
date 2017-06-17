@@ -84,6 +84,18 @@ let rec keyEvent event =
             cursorx := !cursorx + 1
     )
 
+    (* Page up *)
+    else if event = 339 then (
+        cursory := max (!cursory - 12) 0;
+        cursorx := min !cursorx (length !openFile.(!cursory));
+    )
+
+    (* Page down *)
+    else if event = 338 then (
+        cursory := min (!cursory + 12) ((Array.length !openFile) - 1);
+        cursorx := min !cursorx (length !openFile.(!cursory));
+    )
+    
     (* Ctrl-S *)
     else if event = Key.save || event = 19 then (
         let f = open_out filename in
@@ -138,7 +150,7 @@ let rec keyEvent event =
     else try (
         let line = !openFile.(!cursory) in
         !openFile.(!cursory) <- concat
-            (Char.escaped (char_of_int event))
+            (make 1 (char_of_int event))
             [sub line 0 !cursorx; sub line !cursorx ((length line) - !cursorx)];
         cursorx := !cursorx + 1
     ) with e -> ()
