@@ -84,6 +84,16 @@ let rec keyEvent event =
             cursorx := !cursorx + 1
     )
 
+    (* Ctrl-left *)
+    else if event = 545 then (
+        cursorx := max (!cursorx - 6) 0
+    )
+
+    (* Ctrl-right *)
+    else if event = 560 then (
+        cursorx := min (!cursorx + 6) (length !openFile.(!cursory))
+    )
+
     (* Home and end *)
     else if event = Key.home then (
         cursorx := 0
