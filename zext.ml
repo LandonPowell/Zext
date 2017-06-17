@@ -1,3 +1,6 @@
+#use "topfind"
+#require "curses"
+
 open Curses
 open String
 
