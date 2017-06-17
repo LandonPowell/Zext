@@ -1,6 +1,3 @@
-#use "topfind"
-#require "curses"
-
 open Curses
 open String
 
@@ -144,7 +141,7 @@ let rec keyEvent event =
             (Char.escaped (char_of_int event))
             [sub line 0 !cursorx; sub line !cursorx ((length line) - !cursorx)];
         cursorx := !cursorx + 1
-    ) with e -> (print_int event; print_endline "")
+    ) with e -> ()
 
 and mainLoop screen = 
     renderScreen !openFile (
