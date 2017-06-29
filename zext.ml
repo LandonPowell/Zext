@@ -3,10 +3,10 @@ open String
 
 let cursorx = ref 0;;
 let cursory = ref 0;;
-(* 
-    This function should allow 
-    users to change their base 
-    number system eventually. 
+(*
+    This function should allow
+    users to change their base
+    number system eventually.
 *)
 let parseInt int =
     string_of_int int
@@ -19,12 +19,12 @@ let filename =
         Sys.argv.(1)
 ;;
 
-let openFile = 
+let openFile =
     if (Array.length Sys.argv) == 1 then
         ref [|""|]
     else
 
-    let f = open_in Sys.argv.(1) in 
+    let f = open_in Sys.argv.(1) in
     let b = ref [||] in
     try while true do
         b := Array.append !b [|input_line f|]
@@ -33,8 +33,16 @@ let openFile =
         b
 ;;
 
-let rec renderScreen lines yoffset whitespace =
+let rec renderScreen lines whitespace =
     let height, width = get_size() in
+    let yoffset =
+        if !cursory < (height / 2) || Array.length lines <= height then
+            0
+        else if !cursory > Array.length lines - (height / 2) then
+            Array.length lines - height
+        else
+            !cursory - (height / 2)
+    in
     for x = yoffset to min ((Array.length lines) - 1) (height + yoffset - 1) do
         move (x - yoffset) 0;
         attr_on (A.color_pair 1);
@@ -48,7 +56,7 @@ let rec renderScreen lines yoffset whitespace =
     move (!cursory - yoffset) (!cursorx + whitespace);
 ;;
 
-let rec keyEvent event = 
+let rec keyEvent event =
     (* Testing Code :: Used for when I need to find a listener's int.
     print_int event;
     print_endline "";
@@ -57,8 +65,7 @@ let rec keyEvent event =
     (* The magical invisible complexity that is arrow keys. *)
     if event = Key.up && !cursory > 0 then (
         cursory := !cursory - 1;
-        cursorx := min !cursorx (length !openFile.(!cursory));
-    )
+        cursorx := min !cursorx (length !openFile.(!cursory)))
     else if event = Key.down && !cursory < (Array.length !openFile) - 1 then (
         cursory := !cursory + 1;
         cursorx := min !cursorx (length !openFile.(!cursory));
@@ -173,16 +180,10 @@ let rec keyEvent event =
         cursorx := !cursorx + 1
     ) with e -> ()
 
-and mainLoop screen = 
-    renderScreen !openFile (
-        let y, x = get_size() in
-        if !cursory < (y / 2) then
-            0
-        else
-            !cursory - (y / 2)
-    ) (length (parseInt(Array.length !openFile)));
+and mainLoop screen =
+    renderScreen !openFile (length (parseInt(Array.length !openFile)));
 
-    let event = getch() in 
+    let event = getch() in
     if event != 27 && event != 3 then (
         erase();
         keyEvent event;
