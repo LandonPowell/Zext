@@ -48,44 +48,41 @@ let openFile =
         b
 ;;
 
-let rec promptText string height width =
-    move (height / 2) (width / 2 - 14);
-    addstr string;
-    let event = getch() in
+let rec promptText window string height width =
+    wmove window 1 1;
+    waddstr window string;
+    let event = wgetch window in
     if event = 10 then
         string
     else if event = Key.backspace then (
-        move (height / 2) (width / 2 - 14 + (length string) - 1);
-        addstr " ";
-        promptText (sub string 0 ((length string) - 1)) height width
+        wmove window 1 ((length string) - 1);
+        waddstr window " ";
+        promptText window (sub string 0 ((length string) - 1)) height width
     )
     else
-        promptText (string ^ make 1 (char_of_int event)) height width
+        promptText window (string ^ make 1 (char_of_int event)) height width
 
 and promptBox name =
     let height, width = get_size() in
+    let window = newwin 3 30 (height / 2 - 2) (width / 2 - 15) in
 
-    attr_on (A.color_pair 1);
+    wattr_on window (A.color_pair 1);
 
-    move (height / 2 - 2) (width / 2 - 15);
-    addstr " ";
-    addstr name;
-    addstr " ";
+    wmove window 0 1;
+    waddstr window  (make 28 ' ');
 
-    move (height / 2 - 1) (width / 2 - 15);
-    addstr (make 30 ' ');
+    wmove window 2 1;
+    waddstr window  (make 28 ' ');
 
-    move (height / 2 + 1) (width / 2 - 15);
-    addstr (make 30 ' ');
+    wmove window 1 0;
+    waddstr window  " ";
 
-    move (height / 2) (width / 2 + 14);
-    addstr " ";
+    wmove window 1 29;
+    waddstr window  " ";
 
-    move (height / 2) (width / 2 - 15);
-    addstr " ";
-    attr_off (A.color_pair 1);
+    wattr_off window (A.color_pair 1);
 
-    promptText "" height width
+    promptText window "" height width
 ;;
 
 let renderScreen lines whitespace =
