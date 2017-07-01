@@ -12,6 +12,21 @@ let parseInt int =
     string_of_int int
 ;;
 
+let index_of string substring =
+    let x = ref 0 in
+    let running = ref true in
+    while ((!x + length substring) <= length string) && !running do
+        if substring = sub string !x (length substring) then
+            running := false
+        else
+            x := !x + 1
+    done;
+    if ((!x + length substring) > length string) then
+        -1
+    else
+        !x
+;;
+
 let filename =
     if (Array.length Sys.argv) == 1 then
         "untitled.text"
@@ -33,7 +48,47 @@ let openFile =
         b
 ;;
 
-let rec renderScreen lines whitespace =
+let rec promptText string height width =
+    move (height / 2) (width / 2 - 14);
+    addstr string;
+    let event = getch() in
+    if event = 10 then
+        string
+    else if event = Key.backspace then (
+        move (height / 2) (width / 2 - 14 + (length string) - 1);
+        addstr " ";
+        promptText (sub string 0 ((length string) - 1)) height width
+    )
+    else
+        promptText (string ^ make 1 (char_of_int event)) height width
+
+and promptBox name =
+    let height, width = get_size() in
+
+    attr_on (A.color_pair 1);
+
+    move (height / 2 - 2) (width / 2 - 15);
+    addstr " ";
+    addstr name;
+    addstr " ";
+
+    move (height / 2 - 1) (width / 2 - 15);
+    addstr (make 30 ' ');
+
+    move (height / 2 + 1) (width / 2 - 15);
+    addstr (make 30 ' ');
+
+    move (height / 2) (width / 2 + 14);
+    addstr " ";
+
+    move (height / 2) (width / 2 - 15);
+    addstr " ";
+    attr_off (A.color_pair 1);
+
+    promptText "" height width
+;;
+
+let renderScreen lines whitespace =
     let height, width = get_size() in
     let yoffset =
         if !cursory < (height / 2) || Array.length lines <= height then
@@ -130,6 +185,18 @@ let rec keyEvent event =
         close_out f;
     )
 
+    (* Ctrl-F *)
+    else if event = Key.save || event = 6 then (
+        let value = promptBox "Find" in
+        for y = 0 to (Array.length !openFile) - 1 do
+            let index = index_of !openFile.(y) value in
+            if index >= 0 then (
+                cursorx := index + length value;
+                cursory := y;
+            )
+        done;
+    )
+
     (* Backspace *)
     else if event = Key.backspace then (
         if !cursorx = 0 && !cursory > 0 then (
@@ -191,7 +258,7 @@ and mainLoop screen =
     )
 ;;
 
-(* 
+(*
     This is the 'main' which initializes curses.
 *)
 let () =
